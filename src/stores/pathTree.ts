@@ -2,12 +2,12 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 import { type PathTree } from '../types'
 
-export const DEV_HOST: string = 'http://localhost:8000/'
+export const DEV_HOST: string = 'http://192.168.1.5:8000/'
 
 export const usePathTreeStore = defineStore('pathTree', {
   state: () => ({
     pathTreeObj: {
-      currentDir: '.files/Test',
+      currentDir: './files/Test',
       dirs: [
         { name: 'testDir', mtime: '2025-02-15 12:00:00' },
         { name: 'test', mtime: '2025-02-15 12:05:30' }
@@ -21,7 +21,7 @@ export const usePathTreeStore = defineStore('pathTree', {
   }),
 
   actions: {
-    async update(dirPath: string = this.ROOT_PATH) {
+    async update(dirPath: string) {
       try {
         const res = await axios.get(`${DEV_HOST}dirs`, { params: { 'path': dirPath } })
         console.log('get path ok!:', res.data)
@@ -30,11 +30,14 @@ export const usePathTreeStore = defineStore('pathTree', {
         console.error('get path err:', err.response?.data || err.message)
       }
     },
+    async refresh() {
+      this.update(this.pathTreeObj.currentDir)
+    },
     async delete(path: string) {
       try {
         const res = await axios.delete(`${DEV_HOST}files`, { params: { 'path': path } })
         console.log('delete path ok!:', res.data)
-        this.update()
+        this.refresh()
       } catch (err) {
         console.error('delete path err:', err.response?.data || err.message)
       }

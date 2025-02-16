@@ -24,7 +24,7 @@ const tableData = computed<TableRow[]>(() => {
   ];
 });
 onMounted(() => {
-  store.update();
+  store.update(store.ROOT_PATH);
 });
 
 function backToParentDir() {
