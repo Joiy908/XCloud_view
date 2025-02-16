@@ -8,7 +8,6 @@ const store = usePathTreeStore()
 
 <template>
   <el-upload
-    class="upload-demo"
     drag
     :action="`${DEV_HOST}files?target_dir=${store.pathTreeObj.currentDir}`"
     multiple

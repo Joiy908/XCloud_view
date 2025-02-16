@@ -2,8 +2,8 @@
 import { computed, onMounted } from 'vue'
 
 import { usePathTreeStore, DEV_HOST } from '../stores/pathTree'
+import { Delete, Download, Back, Document, Folder } from '@element-plus/icons-vue'
 import { type TableRow } from '../types'
-import { Delete, Download, Back } from '@element-plus/icons-vue'
 
 
 const store = usePathTreeStore();
@@ -43,18 +43,41 @@ function backToParentDir() {
 
 <template>
   <h1>File to download</h1>
-  Current dir: {{ store.pathTreeObj.currentDir }}
-  <el-Button @click="backToParentDir" type="primary" plain :icon="Back" >back to parent dir</el-button>
+  <el-text class="mx-1" size="large">
+    Current dir: &nbsp;{{ store.pathTreeObj.currentDir }} &nbsp;
+            
+  </el-text>
+  
+  <el-Button @click="backToParentDir" type="primary" plain :icon="Back" >back</el-button>
   <br>
-  <el-table :data="tableData" style="width: 100%">
-    <el-table-column prop="name" label="Name" width="180" />
-    <el-table-column prop="type" label="Type" width="100" />
-    <el-table-column prop="size" label="Size" width="120">
+  <el-table :data="tableData">
+    <el-table-column label="Name" >
+      <template #default="{ row }">
+        <template v-if="row.type === 'dir'">
+          <el-link @click="store.update(`${store.pathTreeObj.currentDir}/${row.name}`)">
+            <el-icon><Folder /></el-icon>
+            &nbsp;
+            {{ row.name }}
+          </el-link>
+        </template>
+        <template v-else>
+          <el-link
+            :href="`${DEV_HOST}files?path=${store.pathTreeObj.currentDir}/${row.name}`"
+          >
+            <el-icon><Document /></el-icon>
+            &nbsp;
+            {{ row.name }}
+          </el-link>
+        </template>
+
+      </template>
+    </el-table-column>
+    <el-table-column prop="size" label="Size">
       <template #default="{ row }">
         {{ row.size || '-' }}
       </template>
     </el-table-column>
-    <el-table-column prop="mtime" label="Modified Time" width="200">
+    <el-table-column prop="mtime" label="Modified Time">
       <template #default="{ row }">
         {{ row.mtime }}
       </template>

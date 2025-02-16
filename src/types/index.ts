@@ -20,3 +20,9 @@ export interface TableRow {
 export interface TableData {
     tableRows: TableRow[];
 }
+
+export interface WSMessage {
+    type: 'connect' | 'disconnect' | 'upload' | 'delete' | 'download';
+    client_ip: string;
+    path: string;
+}
